@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\ActivityLog;
 use App\Models\AssessorMapping;
 use App\Models\Division;
@@ -154,9 +155,73 @@ class MappingController extends Controller
 
         $mapping->delete();
 
-        ActivityLog::record('delete_mapping', null, $oldData, null);
+       ActivityLog::record('delete_mapping', null, $oldData, null);
 
         return redirect()->route('mapping.index', ['period_id' => $periodId])
             ->with('success', 'Mapping berhasil dihapus.');
+    }
+
+    /**
+     * RESET 1 MAPPING: hapus assessment terkait, kembalikan is_done jadi false.
+     * Dipakai HR saat penilai salah input dan perlu mengisi ulang.
+     */
+    public function reset(AssessorMapping $mapping)
+    {
+        if (!$mapping->is_done) {
+            return redirect()->route('mapping.index', ['period_id' => $mapping->period_id])
+                ->with('error', 'Mapping ini belum dinilai, tidak ada yang perlu di-reset.');
+        }
+
+        $assessment = $mapping->assessment;
+        $oldData = [
+            'mapping' => $mapping->toArray(),
+            'assessment' => $assessment?->toArray(),
+            'reset_by' => auth()->user()->name,
+        ];
+
+        if ($assessment) {
+            $assessment->technicalScores()->delete();
+            $assessment->generalScores()->delete();
+            $assessment->delete();
+        }
+
+        $mapping->update(['is_done' => false]);
+
+        ActivityLog::record('reset_mapping', $mapping, $oldData, ['is_done' => false]);
+
+        return redirect()->route('mapping.index', ['period_id' => $mapping->period_id])
+            ->with('success', "Penilaian \"{$mapping->assessor->name}\" untuk \"{$mapping->employee->name}\" berhasil di-reset. Penilai bisa mengisi ulang.");
+    }
+
+    /**
+     * RESET SEMUA MAPPING DI 1 PERIODE: hapus semua assessment, kembalikan
+     * semua mapping jadi belum dinilai. Dipakai HR untuk "mulai ulang total"
+     * satu periode (misal ada kesalahan massal atau data testing).
+     */
+    public function resetPeriod(Period $periode)
+    {
+        $mappings = AssessorMapping::with('assessment')->where('period_id', $periode->id)->get();
+        $totalReset = 0;
+
+        foreach ($mappings as $mapping) {
+            if ($mapping->assessment) {
+                $mapping->assessment->technicalScores()->delete();
+                $mapping->assessment->generalScores()->delete();
+                $mapping->assessment->delete();
+                $totalReset++;
+            }
+        }
+
+        AssessorMapping::where('period_id', $periode->id)->update(['is_done' => false]);
+
+        ActivityLog::record(
+            'reset_period_mapping',
+            $periode,
+            ['total_assessment_dihapus' => $totalReset, 'reset_by' => auth()->user()->name],
+            ['period' => $periode->name]
+        );
+
+        return redirect()->route('mapping.index', ['period_id' => $periode->id])
+            ->with('success', "Berhasil reset {$totalReset} penilaian di periode \"{$periode->name}\". Semua mapping kembali ke status belum dinilai.");
     }
 }
