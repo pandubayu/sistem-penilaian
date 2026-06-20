@@ -75,6 +75,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/mapping', [MappingController::class, 'store'])->name('mapping.store');
         Route::delete('/mapping/{mapping}', [MappingController::class, 'destroy'])->name('mapping.destroy');
 
+        // Reset Mapping (hapus hasil penilaian, kembalikan ke belum dinilai)
+        Route::post('/mapping/{mapping}/reset', [MappingController::class, 'reset'])->name('mapping.reset');
+        Route::post('/mapping/reset-periode/{periode}', [MappingController::class, 'resetPeriod'])->name('mapping.reset-period');
+
         // Laporan Raport
         Route::get('/laporan', [ReportController::class, 'index'])->name('laporan.index');
         Route::get('/laporan/export-pdf', [ReportController::class, 'exportPdf'])->name('laporan.export-pdf');
