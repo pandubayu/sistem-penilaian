@@ -18,6 +18,7 @@
         <h2 class="text-sm font-semibold text-slate-700">Riwayat Hasil Penilaian Saya</h2>
     </div>
 
+    <div class="table-responsive">
     <table class="w-full text-sm">
         <thead class="bg-slate-50 text-slate-600 text-left">
             <tr>

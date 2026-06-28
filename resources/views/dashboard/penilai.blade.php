@@ -40,6 +40,7 @@
 
 {{-- Tabel daftar karyawan yang wajib dinilai --}}
 <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+    <div class="table-responsive">
     <table class="w-full text-sm">
         <thead class="bg-slate-50 text-slate-600 text-left">
             <tr>

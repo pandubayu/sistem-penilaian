@@ -40,7 +40,8 @@
     <h2 class="text-lg font-semibold text-slate-800 mb-3">Peringkat Level 1 — Operator/Staff</h2>
 
     <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        <table class="w-full text-sm">
+        <div class="table-responsive">
+    <table class="w-full text-sm">
             <thead class="bg-slate-50 text-slate-600 text-left">
                 <tr>
                     <th class="px-4 py-3 w-16">Peringkat</th>
@@ -91,6 +92,7 @@
             </tbody>
         </table>
     </div>
+    </div>
 </div>
 
 {{-- LEVEL 2 --}}
@@ -98,7 +100,8 @@
     <h2 class="text-lg font-semibold text-slate-800 mb-3">Peringkat Level 2 — Ka. Bagian</h2>
 
     <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        <table class="w-full text-sm">
+        <div class="table-responsive">
+    <table class="w-full text-sm">
             <thead class="bg-slate-50 text-slate-600 text-left">
                 <tr>
                     <th class="px-4 py-3 w-16">Peringkat</th>
@@ -148,6 +151,7 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
     </div>
 </div>
 

@@ -15,7 +15,8 @@
         </h2>
 
         <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-            <table class="w-full text-sm">
+            <div class="table-responsive">
+    <table class="w-full text-sm">
                 <thead class="bg-slate-50 text-slate-600 text-left">
                     <tr>
                         <th class="px-4 py-3 w-20">Grade</th>
@@ -60,6 +61,7 @@
                     @endforeach
                 </tbody>
             </table>
+    </div>
         </div>
     </div>
 @endforeach

@@ -34,33 +34,61 @@
         <p class="text-xs text-slate-400 mt-1">Otomatis terisi sesuai akun yang sedang login.</p>
     </div>
 
-    {{-- 17 Kriteria Umum --}}
-    <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-4">
-        <table class="w-full text-sm">
-            <thead class="bg-slate-50 text-slate-600">
-                <tr>
-                    <th class="px-4 py-3 text-left w-12">No</th>
-                    <th class="px-4 py-3 text-left">Aspek</th>
+    {{-- 17 Kriteria Umum — format card seperti halaman 2 --}}
+    <div class="space-y-4 mb-4">
+        @foreach($generalCriteria as $criteria)
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+                <p class="font-semibold text-slate-800 mb-3">
+                    {{ $criteria->order_number }}. {{ $criteria->aspect_name }}
+                </p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2"
+                     x-data="{ selected: '{{ old('general.' . $criteria->id) }}' }">
                     @foreach($scaleLabels as $score => $label)
-                        <th class="px-2 py-3 text-center w-24">{{ $score }}<br><span class="text-xs font-normal">{{ $label }}</span></th>
+                        @php
+                            $colors = [
+                                1 => ['border' => 'border-red-300',    'bg' => 'bg-red-50',    'text' => 'text-red-700',    'ring' => 'ring-red-400'],
+                                2 => ['border' => 'border-amber-300',  'bg' => 'bg-amber-50',  'text' => 'text-amber-700',  'ring' => 'ring-amber-400'],
+                                3 => ['border' => 'border-blue-300',   'bg' => 'bg-blue-50',   'text' => 'text-blue-700',   'ring' => 'ring-blue-400'],
+                                4 => ['border' => 'border-green-300',  'bg' => 'bg-green-50',  'text' => 'text-green-700',  'ring' => 'ring-green-400'],
+                            ];
+                            $c = $colors[$score];
+                        @endphp
+
+                        <label class="relative flex flex-col items-center justify-center gap-1 p-3 rounded-lg border-2 cursor-pointer transition-all text-center"
+                               :class="selected == '{{ $score }}'
+                                   ? '{{ $c['border'] }} {{ $c['bg'] }} ring-2 {{ $c['ring'] }}'
+                                   : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'">
+
+                            <input type="radio"
+                                   name="general[{{ $criteria->id }}]"
+                                   value="{{ $score }}"
+                                   x-model="selected"
+                                   required
+                                   class="sr-only">
+
+                            {{-- Angka nilai --}}
+                            <span class="text-2xl font-bold"
+                                  :class="selected == '{{ $score }}' ? '{{ $c['text'] }}' : 'text-slate-400'">
+                                {{ $score }}
+                            </span>
+
+                            {{-- Label nilai --}}
+                            <span class="text-xs font-medium leading-tight"
+                                  :class="selected == '{{ $score }}' ? '{{ $c['text'] }}' : 'text-slate-500'">
+                                {{ $label }}
+                            </span>
+
+                            {{-- Centang kalau dipilih --}}
+                            <span x-show="selected == '{{ $score }}'"
+                                  class="absolute top-1.5 right-1.5 text-xs {{ $c['text'] }}">
+                                ✓
+                            </span>
+                        </label>
                     @endforeach
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                @foreach($generalCriteria as $criteria)
-                    <tr>
-                        <td class="px-4 py-3 text-slate-600">{{ $criteria->order_number }}</td>
-                        <td class="px-4 py-3 font-medium text-slate-800">{{ $criteria->aspect_name }}</td>
-                        @foreach($scaleLabels as $score => $label)
-                            <td class="px-2 py-3 text-center">
-                                <input type="radio" name="general[{{ $criteria->id }}]" value="{{ $score }}" required
-                                       class="w-4 h-4">
-                            </td>
-                        @endforeach
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </div>
+            </div>
+        @endforeach
     </div>
 
     {{-- Catatan tambahan --}}
