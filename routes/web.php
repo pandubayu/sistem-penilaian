@@ -40,7 +40,10 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
 
     // Dashboard - tampilan berbeda otomatis sesuai role (dicek di controller)
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard',  [DashboardController::class, 'index'])->name('dashboard');
+    // Ganti Password (semua role bisa akses)
+Route::get('/profil/ganti-password', [App\Http\Controllers\ProfileController::class, 'showChangePassword'])->name('profil.ganti-password');
+Route::post('/profil/ganti-password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profil.update-password');
 
     /*
     |----------------------------------------------------------------------
