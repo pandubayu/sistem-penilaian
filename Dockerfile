@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip pdo_mysql
+    && docker-php-ext-install gd pdo_mysql zip
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
@@ -19,8 +19,10 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php artisan config:cache
-
 EXPOSE 8080
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+CMD php artisan optimize:clear && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
