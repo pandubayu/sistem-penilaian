@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TechnicalCriteriaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,4 +121,16 @@ Route::post('/profil/ganti-password', [App\Http\Controllers\ProfileController::c
         Route::get('/hasil-saya', [AssessmentController::class, 'myResult'])->name('hasil.saya');
     });
 
+});
+
+
+Route::get('/debug-db', function () {
+    return response()->json([
+        'database' => DB::connection()->getDatabaseName(),
+        'host' => config('database.connections.mysql.host'),
+        'port' => config('database.connections.mysql.port'),
+        'users' => DB::table('users')->count(),
+        'employees' => DB::table('employees')->count(),
+        'divisions' => DB::table('divisions')->count(),
+    ]);
 });
