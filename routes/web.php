@@ -125,12 +125,14 @@ Route::post('/profil/ganti-password', [App\Http\Controllers\ProfileController::c
 
 
 Route::get('/debug-db', function () {
+
     return response()->json([
         'database' => DB::connection()->getDatabaseName(),
         'host' => config('database.connections.mysql.host'),
-        'port' => config('database.connections.mysql.port'),
-        'users' => DB::table('users')->count(),
-        'employees' => DB::table('employees')->count(),
-        'divisions' => DB::table('divisions')->count(),
+        'employees_count' => DB::table('employees')->count(),
+        'first_employee' => DB::table('employees')->first(),
+        'laravel_version' => app()->version(),
+        'time' => now(),
     ]);
+
 });
